@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي الـ 8+8 - حسبة المنجرة</title>
+    <title>حسبة المنجرة النهائية - 6 مربعات + 6 مستطيلات</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,6 +12,9 @@
             --success: #27ae60;
             --danger: #e74c3c;
             --bg: #f0f2f5;
+            --wood: #b38b6d;
+            --dark-wood: #8e6d4f;
+            --scale: 2.5px;
         }
 
         body {
@@ -23,7 +26,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: auto;
         }
 
@@ -55,26 +58,60 @@
             color: white;
             font-weight: bold;
             font-size: 0.9rem;
+            z-index: 10;
         }
 
         .success { background-color: var(--success); }
-        .fail { background-color: var(--danger); }
 
         .board-visual {
             background: #e0e0e0;
-            border: 2px solid #ccc;
-            margin: 20px 0;
+            border: 2px solid #333;
+            margin: 40px auto;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 2px;
+            box-sizing: content-box;
         }
 
-        .row { display: flex; gap: 2px; }
+        .small-board {
+            width: calc(213.5 * var(--scale));
+            height: calc(91.5 * var(--scale));
+        }
 
-        .sq { background: #b38b6d; height: 40px; width: 40px; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 1px solid rgba(0,0,0,0.1); }
-        .rect { background: #8e6d4f; height: 18px; width: 40px; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 1px solid rgba(0,0,0,0.1); }
+        .large-board {
+            width: calc(244 * var(--scale));
+            height: calc(122 * var(--scale));
+        }
+
+        .piece {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            border: 1px solid rgba(0,0,0,0.2);
+            box-sizing: border-box;
+            z-index: 5;
+        }
+
+        .sq { background: var(--wood); width: calc(40 * var(--scale)); height: calc(40 * var(--scale)); }
+        .rect-v { background: var(--dark-wood); width: calc(18 * var(--scale)); height: calc(40 * var(--scale)); }
+        .rect-h { background: var(--dark-wood); width: calc(40 * var(--scale)); height: calc(18 * var(--scale)); }
+
+        .blank-area {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            box-sizing: border-box;
+            z-index: 1;
+        }
+
+        .waste-red { background: rgba(231, 76, 60, 0.1); border: 1.5px dashed var(--danger); color: var(--danger); }
+        .gap-green { background: rgba(39, 174, 96, 0.1); border: 1.5px dashed var(--success); color: var(--success); }
 
         .info-box {
             background: #f8f9fa;
@@ -85,12 +122,13 @@
 
         .highlight-text { color: var(--accent); font-weight: bold; }
 
-        .comparison-summary {
-            text-align: center;
-            padding: 20px;
-            background: #fff3cd;
-            border-radius: 10px;
-            border: 1px solid #ffeeba;
+        .label-tag {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            font-size: 11px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -98,72 +136,80 @@
 
 <div class="container">
     <header>
-        <h1>حسبة الـ "ميكس" (8 مربعات + 8 مستطيلات) 🪵</h1>
-        <p>بدنا نشوف مين اللوح اللي "بيتحمل" يشيل النوعين مع بعض بنفس الوقت</p>
+        <h1>المخطط النهائي (6 مربعات + 6 مستطيلات) 🪵</h1>
+        <p>توزيع دقيق يوضح أماكن القص والفضلات المتبقية</p>
     </header>
 
     <div class="result-card">
-        <div class="status-banner success">بزبط وزيادة!</div>
-        <h2 style="color: var(--success);">1. اللوح الكبير (244 × 122 سم)</h2>
-        <p>اللوح هاد "صدره واسع" وبكفي الطلب بالراحة.</p>
+        <div class="status-banner success">اقتصادي جداً</div>
+        <h2 style="color: var(--primary);">1. اللوح الصغير (213.5 × 91.5 سم)</h2>
         
-        <div class="board-visual" style="width: 244px; height: 122px;">
-            <div class="row">
-                <div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div>
-            </div>
-            <div class="row">
-                <div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div>
-            </div>
-            <div class="row">
-                <div class="rect">18x40</div><div class="rect">18x40</div><div class="rect">18x40</div><div class="rect">18x40</div>
-            </div>
-            <div class="row">
-                <div class="rect">18x40</div><div class="rect">18x40</div><div class="rect">18x40</div><div class="rect">18x40</div>
-            </div>
+        <div class="board-visual small-board">
+            <div class="piece sq" style="top: 0; right: 0;">40x40</div>
+            <div class="piece sq" style="top: 0; right: calc(40 * var(--scale));">40x40</div>
+            <div class="piece sq" style="top: 0; right: calc(80 * var(--scale));">40x40</div>
+            <div class="piece sq" style="top: 0; right: calc(120 * var(--scale));">40x40</div>
+            <div class="piece sq" style="top: 0; right: calc(160 * var(--scale));">40x40</div>
+            
+            <div class="blank-area waste-red" style="top: 0; left: 0; width: calc(13.5 * var(--scale)); height: calc(40 * var(--scale));">13.5 سم</div>
+
+            <div class="piece sq" style="top: calc(40 * var(--scale)); right: 0;">40x40</div>
+            <div class="piece rect-v" style="top: calc(40 * var(--scale)); right: calc(40 * var(--scale));">18x40</div>
+            <div class="piece rect-v" style="top: calc(40 * var(--scale)); right: calc(58 * var(--scale));">18x40</div>
+            <div class="piece rect-v" style="top: calc(40 * var(--scale)); right: calc(76 * var(--scale));">18x40</div>
+            <div class="piece rect-v" style="top: calc(40 * var(--scale)); right: calc(94 * var(--scale));">18x40</div>
+            <div class="piece rect-v" style="top: calc(40 * var(--scale)); right: calc(112 * var(--scale));">18x40</div>
+            <div class="piece rect-v" style="top: calc(40 * var(--scale)); right: calc(130 * var(--scale));">18x40</div>
+
+            <div class="blank-area gap-green" style="top: calc(40 * var(--scale)); left: 0; width: calc(65.5 * var(--scale)); height: calc(40 * var(--scale));">فراغ متاح:<br>65.5 × 40 سم</div>
+
+            <div class="blank-area waste-red" style="bottom: 0; right: 0; width: 100%; height: calc(11.5 * var(--scale));">زيادة عرضية: 11.5 سم</div>
+
+            <div class="label-tag" style="top: -25px; right: 0;">الطول: 213.5 سم</div>
+            <div class="label-tag" style="top: 45%; right: -85px; transform: rotate(90deg);">العرض: 91.5 سم</div>
         </div>
 
         <div class="info-box">
             <ul>
-                <li><strong>شو قصينا؟</strong> 8 مربعات و 8 مستطيلات.</li>
-                <li><strong>المساحة المستخدمة:</strong> أخدنا بس <span class="highlight-text">160 سم</span> من طول اللوح، و <span class="highlight-text">116 سم</span> من عرضه.</li>
-                <li><strong>شو بضل للوالد؟</strong> بضل شقفة كبيرة قياسها <span class="highlight-text">84 سم × 122 سم</span> يعني كأنه لسا معك نص لوح زيادة!</li>
+                <li><strong>الفراغ الأخضر:</strong> قطعة ممتازة بتزيد معك قياسها <span class="highlight-text">65.5 سم × 40 سم</span>.</li>
+                <li><strong>الزيادة الحمراء:</strong> شريحة طويلة <span class="highlight-text">11.5 سم</span> على طول اللوح.</li>
+                <li><strong>الخلاصة:</strong> اللوح الصغير كافي وزيادة، وبطلعلك القطع مرتاحة.</li>
             </ul>
         </div>
     </div>
 
     <div class="result-card">
-        <div class="status-banner fail">ما بتكفي</div>
-        <h2 style="color: var(--danger);">2. اللوح الصغير (213.5 × 91.5 سم)</h2>
-        <p>هون المشكلة.. اللوح مساحته ضيقة وما بستوعب الـ 16 قطعة سوا.</p>
+        <h2 style="color: var(--primary);">2. اللوح الكبير (244 × 122 سم)</h2>
+        
+        <div class="board-visual large-board">
+            <div class="piece sq" style="top: 0; right: 0;">40x40</div>
+            <div class="piece sq" style="top: 0; right: calc(40 * var(--scale));">40x40</div>
+            <div class="piece sq" style="top: 0; right: calc(80 * var(--scale));">40x40</div>
+            <div class="piece sq" style="top: calc(40 * var(--scale)); right: 0;">40x40</div>
+            <div class="piece sq" style="top: calc(40 * var(--scale)); right: calc(40 * var(--scale));">40x40</div>
+            <div class="piece sq" style="top: calc(40 * var(--scale)); right: calc(80 * var(--scale));">40x40</div>
 
-        <div class="board-visual" style="width: 213px; height: 91px;">
-            <div class="row">
-                <div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div>
-            </div>
-            <div class="row">
-                <div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div><div class="sq">40x40</div>
-            </div>
-            <div style="background: var(--danger); opacity: 0.2; height: 11px; width: 160px; font-size: 8px; text-align: center;">لا يوجد مساحة للمستطيلات هنا</div>
+            <div class="piece rect-h" style="top: calc(80 * var(--scale)); right: 0;">40x18</div>
+            <div class="piece rect-h" style="top: calc(80 * var(--scale)); right: calc(40 * var(--scale));">40x18</div>
+            <div class="piece rect-h" style="top: calc(80 * var(--scale)); right: calc(80 * var(--scale));">40x18</div>
+            <div class="piece rect-h" style="top: calc(98 * var(--scale)); right: 0;">40x18</div>
+            <div class="piece rect-h" style="top: calc(98 * var(--scale)); right: calc(40 * var(--scale));">40x18</div>
+            <div class="piece rect-h" style="top: calc(98 * var(--scale)); right: calc(80 * var(--scale));">40x18</div>
+
+            <div class="blank-area waste-red" style="top: 0; left: 0; width: calc(124 * var(--scale)); height: 100%;">فضلة ضخمة:<br>124 × 122 سم</div>
+            <div class="blank-area waste-red" style="bottom: 0; right: 0; width: calc(120 * var(--scale)); height: calc(6 * var(--scale));">6 سم</div>
+
+            <div class="label-tag" style="top: -25px; right: 0;">الطول: 244 سم</div>
+            <div class="label-tag" style="top: 45%; right: -85px; transform: rotate(90deg);">العرض: 122 سم</div>
         </div>
 
-        <div class="info-box" style="border-right-color: var(--danger);">
-            <p><strong>ليش ما زبط؟</strong></p>
-            <ul>
-                <li>المربعات الثمانية لحالهم رح يسكروا <span class="highlight-text">80 سم</span> من عرض اللوح.</li>
-                <li>بضل بالعرض بس <span class="highlight-text">11.5 سم</span>.. والمستطيلات أقل عرض بدها إياه <span class="highlight-text">18 سم</span>.</li>
-                <li>حتى لو حاولنا نحطهم على الجنب، ما رح نطلع غير بـ 4 مستطيلات بس.</li>
-                <li><strong>الخلاصة:</strong> اللوح الصغير بيعطيك (8 مربعات + 4 مستطيلات) بس، ما بوصل للـ 8+8.</li>
-            </ul>
+        <div class="info-box">
+            <p>هذا الخيار بترك لك <span class="highlight-text">أكثر من نصف اللوح</span> فاضي. ينصح به فقط إذا كنت تريد خشب إضافي لمشاريع أخرى.</p>
         </div>
-    </div>
-
-    <div class="comparison-summary">
-        <h3>💡 زبدة الحكي للوالد:</h3>
-        <p>يا عمي، إذا بدك تطلع الـ 16 قطعة من لوح واحد، <span class="highlight-text">اللوح الكبير (7 دنانير)</span> هو الخيار الوحيد الشغال، وبزيد منه خشب كثييير ينفعك بشي ثاني. اللوح الصغير بكسّر معك وما بكفي.</p>
     </div>
 
     <footer style="text-align: center; margin-top: 40px; font-size: 0.8rem; color: #888;">
-        تمت الحسبة هندسياً لضمان دقة القص
+        تم تحديث المخطط لضمان دقة القياسات والفضلات
     </footer>
 </div>
 
